@@ -52,9 +52,6 @@ ERR_CIS_ASSIGN_ROOT_PW=111 {{/* Error assigning root password in CIS enforcement
 ERR_CIS_ASSIGN_FILE_PERMISSION=112 {{/* Error assigning permission to a file in CIS enforcement */}}
 ERR_PACKER_COPY_FILE=113 {{/* Error writing a file to disk during VHD CI */}}
 ERR_CIS_APPLY_PASSWORD_CONFIG=115 {{/* Error applying CIS-recommended passwd configuration */}}
-ERR_IOVISOR_KEY_DOWNLOAD_TIMEOUT=116 {{/* Timeout waiting to download IOVisor repo key */}}
-ERR_IOVISOR_APT_KEY_TIMEOUT=117 {{/* Timeout waiting for IOVisor apt-key */}}
-ERR_BCC_INSTALL_TIMEOUT=118 {{/* Timeout waiting for bcc install */}}
 
 ERR_VHD_FILE_NOT_FOUND=124 {{/* VHD log file not found on VM built from VHD distro */}}
 ERR_VHD_BUILD_ERROR=125 {{/* Reserved for VHD CI exit conditions */}}
@@ -63,6 +60,11 @@ ERR_VHD_BUILD_ERROR=125 {{/* Reserved for VHD CI exit conditions */}}
 ERR_AZURE_STACK_GET_ARM_TOKEN=120 {{/* Error generating a token to use with Azure Resource Manager */}}
 ERR_AZURE_STACK_GET_NETWORK_CONFIGURATION=121 {{/* Error fetching the network configuration for the node */}}
 ERR_AZURE_STACK_GET_SUBNET_PREFIX=122 {{/* Error fetching the subnet address prefix for a subnet ID */}}
+
+{{/* BCC/BPF-related error codes */}}
+ERR_IOVISOR_KEY_DOWNLOAD_TIMEOUT=126 {{/* Timeout waiting to download IOVisor repo key */}}
+ERR_IOVISOR_APT_KEY_TIMEOUT=127 {{/* Timeout waiting for IOVisor apt-key */}}
+ERR_BCC_INSTALL_TIMEOUT=128 {{/* Timeout waiting for bcc install */}}
 
 OS=$(sort -r /etc/*-release | gawk 'match($0, /^(ID_LIKE=(coreos)|ID=(.*))$/, a) { print toupper(a[2] a[3]); exit }')
 UBUNTU_OS_NAME="UBUNTU"
