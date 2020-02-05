@@ -65,6 +65,12 @@ ETCD_DOWNLOAD_URL="mcr.microsoft.com/oss/etcd-io/"
 installEtcd "docker"
 echo "  - etcd v${ETCD_VERSION}" >> ${VHD_LOGS_FILEPATH}
 
+installBcc
+cat << EOF >> ${VHD_LOGS_FILEPATH}
+  - bcc-tools
+  - libbcc-examples
+EOF
+
 VNET_CNI_VERSIONS="
 1.0.30
 1.0.29

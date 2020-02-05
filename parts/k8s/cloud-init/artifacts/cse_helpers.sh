@@ -52,6 +52,9 @@ ERR_CIS_ASSIGN_ROOT_PW=111 {{/* Error assigning root password in CIS enforcement
 ERR_CIS_ASSIGN_FILE_PERMISSION=112 {{/* Error assigning permission to a file in CIS enforcement */}}
 ERR_PACKER_COPY_FILE=113 {{/* Error writing a file to disk during VHD CI */}}
 ERR_CIS_APPLY_PASSWORD_CONFIG=115 {{/* Error applying CIS-recommended passwd configuration */}}
+ERR_IOVISOR_KEY_DOWNLOAD_TIMEOUT=116 {{/* Timeout waiting to download IOVisor repo key */}}
+ERR_IOVISOR_APT_KEY_TIMEOUT=117 {{/* Timeout waiting for IOVisor apt-key */}}
+ERR_BCC_INSTALL_TIMEOUT=118 {{/* Timeout waiting for bcc install */}}
 
 ERR_VHD_FILE_NOT_FOUND=124 {{/* VHD log file not found on VM built from VHD distro */}}
 ERR_VHD_BUILD_ERROR=125 {{/* Reserved for VHD CI exit conditions */}}

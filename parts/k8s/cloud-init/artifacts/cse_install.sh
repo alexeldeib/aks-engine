@@ -9,6 +9,7 @@ CONTAINERD_DOWNLOADS_DIR="/opt/containerd/downloads"
 K8S_DOWNLOADS_DIR="/opt/kubernetes/downloads"
 APMZ_DOWNLOADS_DIR="/opt/apmz/downloads"
 UBUNTU_RELEASE=$(lsb_release -r -s)
+UBUNTU_CODENAME=$(lsb_release -c -s)
 
 removeEtcd() {
     if [[ $OS == $COREOS_OS_NAME ]]; then
@@ -167,6 +168,18 @@ installNetworkPlugin() {
     fi
     installCNI
     rm -rf $CNI_DOWNLOADS_DIR &
+}
+
+installBcc() {
+    echo "Installing BCC tools..."
+    IOVISOR_KEY_TMP=/tmp/iovisor-release.key
+    IOVISOR_URL=https://repo.iovisor.org/GPG-KEY
+    retrycmd_if_failure_no_stats 120 5 25 curl -fsSL $IOVISOR_URL > $IOVISOR_KEY_TMP || exit $ERR_IOVISOR_KEY_DOWNLOAD_TIMEOUT
+    wait_for_apt_locks
+    retrycmd_if_failure 30 5 30 apt-key add $IOVISOR_KEY_TMP || exit $ERR_IOVISOR_APT_KEY_TIMEOUT
+    echo "deb https://repo.iovisor.org/apt/${UBUNTU_CODENAME} ${UBUNTU_CODENAME} main" > /etc/apt/sources.list.d/iovisor.list
+    apt_get_update || exit $ERR_APT_UPDATE_TIMEOUT
+    apt_get_install 120 5 25 bcc-tools libbcc-examples linux-headers-$(uname -r) || exit $ERR_BCC_INSTALL_TIMEOUT
 }
 
 downloadCNI() {

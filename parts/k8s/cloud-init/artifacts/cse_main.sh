@@ -77,6 +77,7 @@ fi
 
 if [[ $OS == $UBUNTU_OS_NAME ]] && [ "$FULL_INSTALL_REQUIRED" = "true" ]; then
     time_metric "InstallDeps" installDeps
+    time_metric "InstallBcc" installBcc
 else
     echo "Golden image; skipping dependencies installation"
 fi
