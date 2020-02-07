@@ -20,9 +20,9 @@ source {{GetCSEHelpersScriptFilepath}}
 wait_for_file 3600 1 {{GetCSEInstallScriptFilepath}} || exit $ERR_FILE_WATCH_TIMEOUT
 source {{GetCSEInstallScriptFilepath}}
 
-ensureAPMZ "v0.4.0"
+ensureAPMZ "v0.5.1"
 {{- if HasTelemetryEnabled }}
-eval "$(apmz bash -n "cse" -t "{{GetLinuxDefaultTelemetryTags}}" --api-key "{{GetApplicationInsightsTelemetryKey}}")"
+eval "$(apmz bash -n "cse" -t "{{GetLinuxDefaultTelemetryTags}}" --api-keys "{{GetApplicationInsightsTelemetryKeys}}")"
 {{else}}
 eval "$(apmz bash -d)"
 {{end}}
@@ -84,6 +84,10 @@ fi
 
 if [[ $OS == $UBUNTU_OS_NAME ]]; then
     time_metric "EnsureAuditD" ensureAuditD
+fi
+
+if [[ "$FULL_INSTALL_REQUIRED" = "true" ]]; then
+    time_metric "InstallBpftrace" installBpftrace "v0.9.4"
 fi
 
 {{- if not HasCoreOS}}

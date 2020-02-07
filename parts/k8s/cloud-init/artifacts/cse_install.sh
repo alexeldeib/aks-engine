@@ -8,6 +8,7 @@ CNI_DOWNLOADS_DIR="/opt/cni/downloads"
 CONTAINERD_DOWNLOADS_DIR="/opt/containerd/downloads"
 K8S_DOWNLOADS_DIR="/opt/kubernetes/downloads"
 APMZ_DOWNLOADS_DIR="/opt/apmz/downloads"
+BPFTRACE_DOWNLOADS_DIR="/opt/bpftrace/downloads"
 UBUNTU_RELEASE=$(lsb_release -r -s)
 UBUNTU_CODENAME=$(lsb_release -c -s)
 
@@ -220,6 +221,39 @@ ensureAPMZ() {
     bin_path="$install_dir/apmz_linux_amd64"
     chmod +x "$bin_path"
     ln -Ffs "$bin_path" "$apmz_filepath" # symlink apmz into /usr/local/bin/apmz
+}
+
+# install mostly-static bpftrace binary linked only against glibc > 2.23
+# it should be comptaible with any linux distro using a new enough kernel.
+# this may in the future require filtering the host OS if we encounter compatibility issues.
+# we also install the most commonly used bpftrace scripts my default.
+installBpftrace() {
+    local version=$1
+    local bpftrace_bin="bpftrace"
+    local bpftrace_tools="bpftrace-tools.tar"
+    local bpftrace_url="https://upstreamstagingartifacts.blob.core.windows.net/$bpftrace_bin/$version"
+    local bpftrace_filepath="/usr/local/bin/$bpftrace_bin"
+    local tools_filepath="/usr/local/share/$bpftrace_bin"
+    if [[ -f "$bpftrace_filepath" ]]; then
+        installed_version="$(echo $($bpftrace_bin -V) | cut -d' ' -f2)"
+        if [[ "$version" == "$installed_version" ]]; then
+            # already installed, noop
+            return
+        fi
+        rm "$bpftrace_filepath" # this will not be in this location unless installed by us
+        if [[ -d "$tools_filepath" ]]; then
+            rm -r  "$tools_filepath" # we may have a dated version of the default bpf programs
+        fi
+    fi
+    mkdir -p "$tools_filepath"
+    install_dir="$BPFTRACE_DOWNLOADS_DIR/$version"
+    mkdir -p "$install_dir"
+    download_path="$install_dir/$bpftrace_tools"
+    retrycmd_if_failure 30 5 60 curl -fSL -o "$bpftrace_filepath" "$bpftrace_url/$bpftrace_bin" 
+    retrycmd_if_failure 30 5 60 curl -fSL -o "$download_path" "$bpftrace_url/$bpftrace_tools" 
+    tar -xvf "$download_path" -C "$tools_filepath"
+    chmod +x "$bpftrace_filepath"
+    chmod -R +x "$tools_filepath/tools"
 }
 
 installCNI() {
