@@ -85,6 +85,10 @@ if [[ $OS == $UBUNTU_OS_NAME ]]; then
     time_metric "EnsureAuditD" ensureAuditD
 fi
 
+if [[ "$FULL_INSTALL_REQUIRED" = "true" ]]; then
+    time_metric "InstallBpftrace" installBpftrace "v0.9.4"
+fi
+
 {{- if not HasCoreOS}}
 time_metric "InstallContainerRuntime" installContainerRuntime
 {{end}}
